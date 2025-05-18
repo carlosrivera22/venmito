@@ -16,9 +16,11 @@ export class PromotionsRepository {
             active: true
         }];
     }
-    // Implement methods for interacting with the database
-    // Example:
-    // async createPromotion(promotion: Promotion): Promise<Promotion> {
-    //   // Implement logic to create a promotion in the database
-    // }
+
+    async bulkCreatePromotions(promotions: any[]): Promise<any> {
+        // Implement logic to bulk create promotions in the database
+        // Example:
+        console.log("Bulk creating promotions:", promotions);
+        return promotions;
+    }
 }

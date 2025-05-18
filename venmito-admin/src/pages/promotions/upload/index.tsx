@@ -49,6 +49,8 @@ export default function UploadPage() {
     });
 
     const handleUpload = async (endpoint: string) => {
+        console.log("JSON DATA: ", jsonData)
+        console.log("ENDPOINT: ", endpoint);
         if (jsonData.length === 0) {
             setUploadError('No data to upload');
             return;
@@ -79,7 +81,7 @@ export default function UploadPage() {
 
     const onUploadClick = async () => {
         try {
-            await handleUpload('/api/csv/upload');
+            await handleUpload('/api/promotions/upload');
         } catch (error) {
             console.error(error);
         }

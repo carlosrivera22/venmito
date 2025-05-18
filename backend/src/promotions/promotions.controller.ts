@@ -1,4 +1,4 @@
-import { Controller, Get } from "@nestjs/common";
+import { Body, Controller, Get, Post } from "@nestjs/common";
 import { PromotionsService } from "./promotions.service";
 
 @Controller("promotions")
@@ -8,5 +8,10 @@ export class PromotionsController {
     @Get()
     async getPromotions() {
         return this.promotionsService.getPromotions()
+    }
+
+    @Post("upload")
+    async bulkUpload(@Body() promotionsData: any[]) {
+        return this.promotionsService.bulkCreate(promotionsData)
     }
 }

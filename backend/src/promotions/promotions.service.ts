@@ -8,4 +8,8 @@ export class PromotionsService {
     getPromotions() {
         return this.promotionsRepository.findPromotions();
     }
+
+    bulkCreate(promotions: any) {
+        return this.promotionsRepository.bulkCreatePromotions(promotions);
+    }
 }
