@@ -24,10 +24,7 @@ export default function Navbar() {
     };
 
     const menuItems = [
-        { text: 'Features', href: '/features' },
-        { text: 'Solutions', href: '/solutions' },
-        { text: 'Pricing', href: '/pricing' },
-        { text: 'Documentation', href: '/docs' },
+        { text: 'People', href: '/people' },
     ];
 
     const drawer = (
@@ -39,12 +36,6 @@ export default function Navbar() {
                     </ListItem>
                 ))}
                 <Divider />
-                <ListItem component="a" href="/login">
-                    <ListItemText primary="Log in" />
-                </ListItem>
-                <ListItem component="a" href="/signup">
-                    <ListItemText primary="Sign up" sx={{ color: 'primary.main' }} />
-                </ListItem>
             </List>
         </Box>
     );
@@ -90,12 +81,6 @@ export default function Navbar() {
                                     {item.text}
                                 </Button>
                             ))}
-                            <Button href="/login" sx={{ mx: 1, color: 'text.secondary' }}>
-                                Log in
-                            </Button>
-                            <Button href="/signup" variant="contained" color="primary" sx={{ ml: 2 }}>
-                                Sign up
-                            </Button>
                         </Box>
 
                         {/* Mobile Navigation */}
