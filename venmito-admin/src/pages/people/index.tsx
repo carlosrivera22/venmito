@@ -13,8 +13,10 @@ import {
     Box
 } from '@mui/material';
 import { usePeople } from "@/hooks/usePeople";
+import { useRouter } from 'next/router';
 
 export default function People() {
+    const router = useRouter();
     const { people, isLoading, error } = usePeople();
 
     // Format date to a readable string
@@ -57,7 +59,7 @@ export default function People() {
                 <Button
                     variant="contained"
                     color="primary"
-                // onClick={handleOpenAddPersonModal}
+                    onClick={() => router.push('/people/upload')}
                 >
                     Add Person
                 </Button>
