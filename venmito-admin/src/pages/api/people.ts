@@ -1,16 +1,8 @@
 // pages/api/people.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 
-type Person = {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email?: string;
-    // add other properties based on your API response
-};
-
 type ResponseData = {
-    data: Person[] | Person | string;
+    data: any;
     error?: string;
 };
 
