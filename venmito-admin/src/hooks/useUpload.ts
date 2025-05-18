@@ -56,7 +56,7 @@ export const useFileUpload = (
     } = options;
 
     // File drop handler
-    const onDrop = useCallback((acceptedFiles: File[]) => {
+    const onDrop = useCallback(async (acceptedFiles: File[]) => {
         const file = acceptedFiles[0];
 
         // Check if file exists
@@ -81,41 +81,64 @@ export const useFileUpload = (
             return;
         }
 
-        // Handle YAML files
-        if (isYaml) {
-            process(file)
-            setUploadError("YAML support is coming soon. Currently only JSON files are fully supported.");
-            setJsonData([]);
-            return;
-        }
+        try {
+            // Handle YAML files
+            if (isYaml) {
+                try {
+                    const processedData = await process(file);
 
-        // Continue with JSON processing as before
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            try {
-                const jsonContent = JSON.parse(event.target?.result as string);
+                    // Validate processed YAML data
+                    const validationResult = validate(processedData);
 
-                // Validate JSON structure
-                const validationResult = validate(jsonContent);
+                    // Check validation result
+                    if (validationResult !== true) {
+                        throw new Error(validationResult as string);
+                    }
 
-                // Check validation result
-                if (validationResult !== true) {
-                    throw new Error(validationResult as string);
+                    // Limit number of items if specified
+                    const limitedData = processedData.slice(0, maxItems);
+                    console.log("Processed YAML data:", limitedData);
+                    setJsonData(limitedData);
+                    setUploadSuccess(true);
+                    setUploadError(null);
+                } catch (error) {
+                    setUploadError(error instanceof Error ? error.message : 'Failed to process YAML file');
+                    setJsonData([]);
                 }
-
-                // Limit number of items if specified
-                const limitedData = jsonContent.slice(0, maxItems);
-                console.log("JSON DATA: ", limitedData);
-                setJsonData(limitedData);
-                setUploadSuccess(true);
-                setUploadError(null);
-            } catch (error) {
-                setUploadError(error instanceof Error ? error.message : 'Invalid file');
-                setJsonData([]);
+                return;
             }
-        };
-        reader.readAsText(file);
-    }, [validate, maxItems, allowedTypes]);
+
+            // Continue with JSON processing as before
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const jsonContent = JSON.parse(event.target?.result as string);
+
+                    // Validate JSON structure
+                    const validationResult = validate(jsonContent);
+
+                    // Check validation result
+                    if (validationResult !== true) {
+                        throw new Error(validationResult as string);
+                    }
+
+                    // Limit number of items if specified
+                    const limitedData = jsonContent.slice(0, maxItems);
+                    console.log("JSON DATA: ", limitedData);
+                    setJsonData(limitedData);
+                    setUploadSuccess(true);
+                    setUploadError(null);
+                } catch (error) {
+                    setUploadError(error instanceof Error ? error.message : 'Invalid file');
+                    setJsonData([]);
+                }
+            };
+            reader.readAsText(file);
+        } catch (error) {
+            setUploadError(error instanceof Error ? error.message : 'Error processing file');
+            setJsonData([]);
+        }
+    }, [validate, maxItems, process]);
 
     // Dropzone hook
     const dropzone = useDropzone({
@@ -175,6 +198,29 @@ export const useFileUpload = (
         setUploadSuccess(false);
     };
 
+    // Expose a method to manually set JSON data
+    const setData = (data: any[]) => {
+        try {
+            // Validate the data first
+            const validationResult = validate(data);
+
+            // Check validation result
+            if (validationResult !== true) {
+                throw new Error(validationResult as string);
+            }
+
+            // Limit number of items if specified
+            const limitedData = data.slice(0, maxItems);
+            setJsonData(limitedData);
+            setUploadSuccess(true);
+            setUploadError(null);
+            return true;
+        } catch (error) {
+            setUploadError(error instanceof Error ? error.message : 'Invalid data format');
+            return false;
+        }
+    };
+
     return {
         jsonData,
         uploadError,
@@ -184,6 +230,7 @@ export const useFileUpload = (
         handleUpload,
         reset,
         setUploadError,
-        setUploadSuccess
+        setUploadSuccess,
+        setData // Expose the new method to manually set data
     };
 };
