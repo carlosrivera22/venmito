@@ -12,4 +12,9 @@ export class TransfersRepository {
             status: 'pending'
         }]
     }
+
+    async bulkCreateTransfers(transfers: any[]) {
+        console.log("transfers: ", transfers);
+        return transfers;
+    }
 }

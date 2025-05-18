@@ -79,7 +79,7 @@ export default function UploadPage() {
 
     const onUploadClick = async () => {
         try {
-            await handleUpload('/api/csv/upload');
+            await handleUpload('/api/transfers/upload');
         } catch (error) {
             console.error(error);
         }

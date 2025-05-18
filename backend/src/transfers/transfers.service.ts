@@ -7,4 +7,8 @@ export class TransfersService {
     getTransfers() {
         return this.transferRepository.findTransfers();
     }
+
+    bulkCreate(transfers: any[]) {
+        return this.transferRepository.bulkCreateTransfers(transfers);
+    }
 }

@@ -12,7 +12,7 @@ export default async function handler(
     if (req.method !== 'POST') {
         return res.status(405).json({ data: "", error: 'Method not allowed' })
     }
-    const transfersData = req.body
+    const { data: transfersData } = req.body
     if (!Array.isArray(transfersData) || transfersData.length === 0) {
         return res.status(400).json({
             data: "", error: 'Invalid or empty upload data'
