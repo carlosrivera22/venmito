@@ -50,19 +50,44 @@ export const useFileUpload = (
     const {
         validate = defaultValidation,
         maxItems = 2000,
-        allowedTypes = ['application/json']
+        allowedTypes = ['application/json', 'application/x-yaml', 'text/yaml', 'text/x-yaml']
     } = options;
 
     // File drop handler
     const onDrop = useCallback((acceptedFiles: File[]) => {
         const file = acceptedFiles[0];
 
-        // Check file type
-        if (!allowedTypes.includes(file.type)) {
-            setUploadError(`Please upload a ${allowedTypes.join(' or ')} file`);
+        // Check if file exists
+        if (!file) {
+            setUploadError('No file selected');
             return;
         }
 
+        // Detect file type based on extension and mime type
+        const isYaml = file.name.endsWith('.yml') ||
+            file.name.endsWith('.yaml') ||
+            file.type === 'application/x-yaml' ||
+            file.type === 'text/yaml' ||
+            file.type === 'text/x-yaml';
+
+        const isJson = file.name.endsWith('.json') ||
+            file.type === 'application/json';
+
+        // If neither yaml nor json, show error
+        if (!isYaml && !isJson) {
+            setUploadError('Please upload a JSON or YAML file');
+            return;
+        }
+
+        // Handle YAML files
+        if (isYaml) {
+            console.log("todo: implement yaml processor");
+            setUploadError("YAML support is coming soon. Currently only JSON files are fully supported.");
+            setJsonData([]);
+            return;
+        }
+
+        // Continue with JSON processing as before
         const reader = new FileReader();
         reader.onload = (event) => {
             try {
@@ -93,9 +118,12 @@ export const useFileUpload = (
     // Dropzone hook
     const dropzone = useDropzone({
         onDrop,
-        accept: Object.fromEntries(
-            allowedTypes.map(type => [type, []])
-        ),
+        accept: {
+            'application/json': ['.json'],
+            'application/x-yaml': ['.yml', '.yaml'],
+            'text/yaml': ['.yml', '.yaml'],
+            'text/x-yaml': ['.yml', '.yaml']
+        },
         multiple: false
     });
 

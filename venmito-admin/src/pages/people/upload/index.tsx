@@ -58,11 +58,11 @@ export default function UploadPage() {
                 <input {...getInputProps()} />
                 <Typography variant="body1">
                     {isDragActive
-                        ? 'Drop the JSON file here ...'
-                        : 'Drag \'n\' drop a JSON file here, or click to select a file'}
+                        ? 'Drop the file here ...'
+                        : 'Drag \'n\' drop a JSON or YAML file here, or click to select a file'}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                    (Only *.json files will be accepted)
+                    (*.json, *.yml, and *.yaml files are accepted)
                 </Typography>
             </Box>
 
