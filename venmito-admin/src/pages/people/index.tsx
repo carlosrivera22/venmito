@@ -77,7 +77,6 @@ export default function People() {
                             <TableCell>City</TableCell>
                             <TableCell>Country</TableCell>
                             <TableCell>Date of Birth</TableCell>
-                            <TableCell align="right">Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
