@@ -28,11 +28,10 @@ export default function UploadPage() {
         setUploadSuccess
     } = useFileUpload();
 
-    console.log("JSON DATA: ", jsonData);
 
     const onUploadClick = async () => {
         try {
-            await handleUpload('/api/upload-people');
+            await handleUpload('/api/people/upload');
         } catch (error) {
             // Error is already handled in the hook
             console.error(error);

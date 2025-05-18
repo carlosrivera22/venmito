@@ -101,6 +101,7 @@ export const useFileUpload = (
 
     // Upload handler
     const handleUpload = async (uploadUrl: string) => {
+        console.log("JSON DATA: ", jsonData);
         if (jsonData.length === 0) {
             setUploadError('No data to upload');
             return;
