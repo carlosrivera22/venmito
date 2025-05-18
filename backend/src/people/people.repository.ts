@@ -1,20 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import db from "../database";
 
-interface PersonData {
-    id?: string;
-    first_name: string;
-    last_name: string;
-    telephone?: string;
-    email: string;
-    location?: {
-        City?: string;
-        Country?: string;
-    };
-    devices?: string[];
-    dob?: string;
-}
-
 @Injectable()
 export class PeopleRepository {
     private readonly tableName = "people";
