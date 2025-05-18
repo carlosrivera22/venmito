@@ -1,18 +1,33 @@
+import { useEffect, useState } from "react";
+
 export default function useTransfers() {
-    return {
-        transfers: [
-            {
-                id: '1',
-                name: 'Transfer 1',
-                amount: 100,
-                currency: 'USD',
-            },
-            {
-                id: '2',
-                name: 'Transfer 2',
-                amount: 200,
-                currency: 'EUR',
-            },
-        ],
+    const [transfers, setTransfers] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const fetchTransfers = async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const response = await fetch("/api/transfers");
+            if (!response.ok) {
+                setError("Error fetching transfers");
+                setIsLoading(false);
+                return;
+            }
+            const data = await response.json();
+            setTransfers(data);
+            setIsLoading(false);
+        } catch (error) {
+            setError("Error fetching transfers");
+        } finally {
+            setIsLoading(false);
+        }
     };
+
+    useEffect(() => {
+        fetchTransfers();
+    }, []);
+
+    return { transfers, isLoading, error };
 }
