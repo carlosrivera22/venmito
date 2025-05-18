@@ -10,7 +10,9 @@ import {
     Paper,
     Typography,
     Button,
-    Box
+    Box,
+    Chip,
+    Stack
 } from '@mui/material';
 import { usePeople } from "@/hooks/usePeople";
 import { useRouter } from 'next/router';
@@ -18,7 +20,6 @@ import { useRouter } from 'next/router';
 export default function People() {
     const router = useRouter();
     const { people, isLoading, error } = usePeople();
-    console.log("PEOPLE: ", people);
 
     // Format date to a readable string
     const formatDate = (dateString?: string | Date) => {
@@ -28,6 +29,20 @@ export default function People() {
             month: 'long',
             day: 'numeric'
         });
+    };
+
+    // Get color for device chip
+    const getDeviceColor = (deviceName: string) => {
+        switch (deviceName.toLowerCase()) {
+            case 'android':
+                return 'success';
+            case 'iphone':
+                return 'primary';
+            case 'desktop':
+                return 'secondary';
+            default:
+                return 'default';
+        }
     };
 
     if (isLoading) {
@@ -49,7 +64,7 @@ export default function People() {
     }
 
     return (
-        <Container maxWidth="lg" sx={{ mt: 4 }}>
+        <Container maxWidth={false} sx={{ mt: 4, px: 4 }}>
             <Box sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -67,7 +82,7 @@ export default function People() {
             </Box>
 
             <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="people table">
+                <Table sx={{ minWidth: 900 }} aria-label="people table">
                     <TableHead>
                         <TableRow>
                             <TableCell>ID</TableCell>
@@ -78,6 +93,7 @@ export default function People() {
                             <TableCell>City</TableCell>
                             <TableCell>Country</TableCell>
                             <TableCell>Date of Birth</TableCell>
+                            <TableCell sx={{ minWidth: 200 }}>Devices</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -98,14 +114,32 @@ export default function People() {
                                     <TableCell component="th" scope="row">
                                         {person.id}
                                     </TableCell>
-                                    <TableCell>{person.firstName}</TableCell>
-                                    <TableCell>{person.lastName}</TableCell>
+                                    <TableCell>{person.first_name}</TableCell>
+                                    <TableCell>{person.last_name}</TableCell>
                                     <TableCell>{person.email || 'N/A'}</TableCell>
                                     <TableCell>{person.telephone || 'N/A'}</TableCell>
-                                    <TableCell>{person.city || 'N/A'}</TableCell>
-                                    <TableCell>{person.country || 'N/A'}</TableCell>
+                                    <TableCell>{person.location?.City || 'N/A'}</TableCell>
+                                    <TableCell>{person.location?.Country || 'N/A'}</TableCell>
                                     <TableCell>
                                         {person.dob ? formatDate(person.dob) : 'N/A'}
+                                    </TableCell>
+                                    <TableCell>
+                                        {person.devices && person.devices.length > 0 ? (
+                                            <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ gap: 1 }}>
+                                                {person.devices.map((device: string, index: number) => (
+                                                    <Chip
+                                                        key={index}
+                                                        label={device}
+                                                        size="small"
+                                                        color={getDeviceColor(device) as "default" | "primary" | "secondary" | "error" | "info" | "success" | "warning"}
+                                                    />
+                                                ))}
+                                            </Stack>
+                                        ) : (
+                                            <Typography variant="body2" color="textSecondary">
+                                                No devices
+                                            </Typography>
+                                        )}
                                     </TableCell>
                                 </TableRow>
                             ))
