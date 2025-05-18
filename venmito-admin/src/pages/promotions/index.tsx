@@ -1,3 +1,4 @@
+
 import { usePromotions } from "@/hooks/usePromotions";
 
 export default function Promotions() {
