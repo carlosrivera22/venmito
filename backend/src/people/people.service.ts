@@ -9,4 +9,8 @@ export class PeopleService {
     findAll() {
         return this.peopleRepository.findPeople();
     }
+
+    bulkCreate(people: any) {
+        return this.peopleRepository.bulkCreatePeople(people);
+    }
 }

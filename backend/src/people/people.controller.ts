@@ -3,10 +3,6 @@ import {
     Get,
     Post,
     Body,
-    UsePipes,
-    ValidationPipe,
-    HttpCode,
-    HttpStatus
 } from "@nestjs/common";
 import { PeopleService } from "./people.service";
 
@@ -36,6 +32,6 @@ export class PeopleController {
 
     @Post("upload")
     async bulkUpload(@Body() peopleData: any[]) {
-        return peopleData;
+        return this.peopleService.bulkCreate(peopleData);
     }
 }
