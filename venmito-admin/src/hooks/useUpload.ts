@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useYamlProcessor } from './useYamlProcessor';
 
 // Type for validation function
 type ValidationFunction = (data: any[]) => boolean | string;
@@ -45,6 +46,7 @@ export const useFileUpload = (
     const [uploadError, setUploadError] = useState<string | null>(null);
     const [uploadSuccess, setUploadSuccess] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
+    const { process } = useYamlProcessor();
 
     // Merge options with defaults
     const {
@@ -81,7 +83,7 @@ export const useFileUpload = (
 
         // Handle YAML files
         if (isYaml) {
-            console.log("todo: implement yaml processor");
+            process(file)
             setUploadError("YAML support is coming soon. Currently only JSON files are fully supported.");
             setJsonData([]);
             return;
