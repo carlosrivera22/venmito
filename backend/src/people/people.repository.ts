@@ -6,8 +6,39 @@ export class PeopleRepository {
     private readonly tableName = "people";
 
     async findPeople(): Promise<any> {
-        const people = await db(this.tableName).select("*");
-        return people;
+        // Step 1: Get all people
+        const people = await db(this.tableName).select('*');
+
+        // Step 2: For each person, get their devices
+        const peopleWithDevices = await Promise.all(
+            people.map(async (person) => {
+                // Get device associations
+                const deviceAssociations = await db('people_devices')
+                    .where('peopleId', person.id)
+                    .join('devices', 'people_devices.deviceId', 'devices.id')
+                    .select('devices.deviceName');
+
+                // Extract device names from the associations
+                const devices = deviceAssociations.map(assoc => assoc.deviceName);
+
+                // Format the response to match the expected structure
+                return {
+                    id: person.id,
+                    first_name: person.firstName,
+                    last_name: person.lastName,
+                    telephone: person.telephone,
+                    email: person.email,
+                    devices: devices,
+                    location: {
+                        City: person.city,
+                        Country: person.country
+                    },
+                    dob: person.dob ? new Date(person.dob).toISOString().split('T')[0] : null
+                };
+            })
+        );
+
+        return peopleWithDevices;
     }
 
     async bulkCreatePeople(data: any[]): Promise<any[]> {

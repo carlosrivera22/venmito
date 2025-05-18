@@ -18,6 +18,7 @@ import { useRouter } from 'next/router';
 export default function People() {
     const router = useRouter();
     const { people, isLoading, error } = usePeople();
+    console.log("PEOPLE: ", people);
 
     // Format date to a readable string
     const formatDate = (dateString?: string | Date) => {
