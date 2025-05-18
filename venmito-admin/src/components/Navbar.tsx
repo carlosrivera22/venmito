@@ -25,6 +25,7 @@ export default function Navbar() {
 
     const menuItems = [
         { text: 'People', href: '/people' },
+        { text: 'Promotions', href: '/promotions' }
     ];
 
     const drawer = (
