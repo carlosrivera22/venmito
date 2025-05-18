@@ -1,12 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
+import { TransfersRepository } from "./transfers.repository";
 
 @Injectable()
 export class TransfersService {
+    constructor(private readonly transferRepository: TransfersRepository) { }
     getTransfers() {
-        return [
-            { id: 1, amount: 100, description: 'Transfer to John' },
-            { id: 2, amount: 200, description: 'Transfer to Jane' },
-            { id: 3, amount: 300, description: 'Transfer to Mark' },
-        ];
+        return this.transferRepository.findTransfers();
     }
 }
