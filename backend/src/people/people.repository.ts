@@ -50,6 +50,7 @@ export class PeopleRepository {
                 try {
                     // Prepare person data for insertion
                     const personToInsert = {
+                        identifier: personData.id,
                         firstName: personData.first_name,
                         lastName: personData.last_name,
                         telephone: personData.telephone,
