@@ -69,7 +69,7 @@ export default function Navbar() {
                                         color: 'text.primary',
                                     }}
                                 >
-                                    Venmito
+                                    VENMITO
                                 </Typography>
                             </Box>
                         </Box>

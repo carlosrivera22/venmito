@@ -1,11 +1,14 @@
 import React from 'react';
-import { Box, Container, Typography, Grid } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import MostUsedDevicesChart from '@/components/charts/MostUsedDevicesChart';
 import PromotionsByCompanyChart from '@/components/charts/PromotionsByCompanyChart';
 import PopularItemsChart from '@/components/charts/PopularItems';
 import TransactionsByStoreChart from '@/components/charts/TransactionsByStore';
 import TransactionTrendsChart from '@/components/charts/TransactionTrends';
 
+// New transfer charts
+import TransferVolumeChart from '@/components/charts/TransferVolumeChart';
+import TransfersByUserChart from '@/components/charts/TransfersByUserChart';
 const Dashboard = () => {
     return (
         <Container maxWidth={false} sx={{ mt: 4, mb: 4 }}>
@@ -48,7 +51,26 @@ const Dashboard = () => {
                     </Box>
                 </Box>
 
-                {/* Third row - More transaction insights */}
+                {/* Third row - Transaction trends and transfers volume */}
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: { xs: 'column', md: 'row' },
+                    gap: 3,
+                    '& > *': { flex: 1 }
+                }}>
+                    {/* Transfer Volume Distribution */}
+                    <Box sx={{ height: { xs: 400, md: 500 } }}>
+                        <TransferVolumeChart />
+                    </Box>
+
+                    {/* Transfers By User */}
+                    <Box sx={{ height: { xs: 400, md: 500 } }}>
+                        <TransfersByUserChart />
+                    </Box>
+
+                </Box>
+
+                {/* Fourth row - Transfers specific charts */}
                 <Box sx={{
                     display: 'flex',
                     flexDirection: { xs: 'column', md: 'row' },
