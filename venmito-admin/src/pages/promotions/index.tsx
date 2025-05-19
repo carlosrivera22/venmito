@@ -100,7 +100,6 @@ export default function Promotions() {
                 alignItems: 'center',
                 mb: 3
             }}>
-                <Typography variant="h4">People List</Typography>
                 <Button
                     variant="contained"
                     color="primary"
