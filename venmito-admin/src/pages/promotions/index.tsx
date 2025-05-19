@@ -116,6 +116,7 @@ export default function Promotions() {
                     <TableHead>
                         <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
                             <TableCell>Person</TableCell>
+                            <TableCell>Promotion</TableCell>
                             <TableCell>Contact</TableCell>
                             <TableCell>Response</TableCell>
                             <TableCell>Promotion Date</TableCell>
@@ -129,6 +130,11 @@ export default function Promotions() {
                                         {promotion.firstName && promotion.lastName
                                             ? `${promotion.firstName} ${promotion.lastName}`
                                             : "Unknown Person"}
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="body2" sx={{ mb: 0.5 }}>
+                                            {promotion.promotion}
+                                        </Typography>
                                     </TableCell>
                                     <TableCell>
                                         <Box>

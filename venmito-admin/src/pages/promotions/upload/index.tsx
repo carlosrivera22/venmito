@@ -49,8 +49,6 @@ export default function UploadPage() {
     });
 
     const handleUpload = async (endpoint: string) => {
-        console.log("JSON DATA: ", jsonData)
-        console.log("ENDPOINT: ", endpoint);
         if (jsonData.length === 0) {
             setUploadError('No data to upload');
             return;
