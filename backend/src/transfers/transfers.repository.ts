@@ -20,6 +20,11 @@ export class TransfersRepository {
             const insertedTransfers: any = [];
             for (const transfer of transfers) {
                 try {
+                    //Skip entries without sender or recipient
+                    if (!transfer.sender_id || !transfer.recipient_id) {
+                        continue;
+                    }
+                    //Check if sender and recipient exist
                     const paddedRecipient = transfer.recipient_id.toString().padStart(4, '0');
                     const paddedSender = transfer.sender_id.toString().padStart(4, '0');
                     console.log("Recipient: ", paddedRecipient);
