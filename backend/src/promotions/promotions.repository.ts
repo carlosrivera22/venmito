@@ -28,7 +28,7 @@ export class PromotionsRepository {
             for (const promotionData of data) {
                 try {
                     // Skip entries without email
-                    if (!promotionData.client_email) {
+                    if (!promotionData.client_email && !promotionData.telephone) {
                         console.log(`Skipping promotion with no email: ${promotionData.promotion}`);
                         continue;
                     }
@@ -38,6 +38,7 @@ export class PromotionsRepository {
                     try {
                         person = await trx('people')
                             .where({ email: promotionData.client_email })
+                            .orWhere({ telephone: promotionData.telephone })
                             .first();
 
                         console.log("Person found:", person);
