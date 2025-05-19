@@ -2,6 +2,9 @@ import React from 'react';
 import { Box, Container, Typography, Grid } from '@mui/material';
 import MostUsedDevicesChart from '@/components/charts/MostUsedDevicesChart';
 import PromotionsByCompanyChart from '@/components/charts/PromotionsByCompanyChart';
+import PopularItemsChart from '@/components/charts/PopularItems';
+import TransactionsByStoreChart from '@/components/charts/TransactionsByStore';
+import TransactionTrendsChart from '@/components/charts/TransactionTrends';
 
 const Dashboard = () => {
     return (
@@ -27,7 +30,36 @@ const Dashboard = () => {
                     </Box>
                 </Box>
 
-                {/* You can add more dashboard components here */}
+                {/* Second row - Transaction charts */}
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: { xs: 'column', md: 'row' },
+                    gap: 3,
+                    '& > *': { flex: 1 }
+                }}>
+                    {/* Transactions by Store */}
+                    <Box sx={{ height: { xs: 400, md: 500 } }}>
+                        <TransactionsByStoreChart />
+                    </Box>
+
+                    {/* Popular Items */}
+                    <Box sx={{ height: { xs: 400, md: 500 } }}>
+                        <PopularItemsChart />
+                    </Box>
+                </Box>
+
+                {/* Third row - More transaction insights */}
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: { xs: 'column', md: 'row' },
+                    gap: 3,
+                    '& > *': { flex: 1 }
+                }}>
+                    {/* Transaction Trends */}
+                    <Box sx={{ height: { xs: 400, md: 500 } }}>
+                        <TransactionTrendsChart />
+                    </Box>
+                </Box>
             </Box>
         </Container>
     );
