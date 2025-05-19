@@ -27,7 +27,8 @@ export default function Navbar() {
         { text: 'Dashboard', href: '/dashboard' },
         { text: 'People', href: '/people' },
         { text: 'Promotions', href: '/promotions' },
-        { text: 'Transfers', href: '/transfers' }
+        { text: 'Transfers', href: '/transfers' },
+        { text: "Transactions", href: '/transactions' },
     ];
 
     const drawer = (
