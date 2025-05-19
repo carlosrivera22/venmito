@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export const usePromotions = () => {
-    const [promotions, setPromotions] = useState([]);
+    const [promotions, setPromotions] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -15,8 +15,8 @@ export const usePromotions = () => {
                 setIsLoading(false);
                 return;
             }
-            const data = await response.json();
-            setPromotions(data);
+            const promotions = await response.json();
+            setPromotions(promotions.data);
             setIsLoading(false);
         } catch (error) {
             setError("Error fetching promotions");
