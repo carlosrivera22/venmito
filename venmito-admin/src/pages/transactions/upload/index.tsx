@@ -16,10 +16,15 @@ import {
     CircularProgress,
     Tabs,
     Tab,
-    Chip
+    Chip,
+    Tooltip,
+    IconButton,
+    Collapse,
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import { XMLParser } from 'fast-xml-parser';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 export default function XmlUploadPage() {
     const [jsonData, setJsonData] = useState<any[]>([]);
@@ -28,39 +33,14 @@ export default function XmlUploadPage() {
     const [isUploading, setIsUploading] = useState(false);
     const [rawXml, setRawXml] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<'table' | 'raw'>('table');
-    const [flattenedData, setFlattenedData] = useState<any[]>([]);
+    const [openRows, setOpenRows] = useState<{ [key: string]: boolean }>({});
 
-    // Process transactions to create a flattened view better suited for table display
-    useEffect(() => {
-        if (jsonData.length > 0) {
-            // Create a flattened version of the transactions
-            const flattened = jsonData.map((transaction: any) => {
-                // Get all items as a comma-separated string
-                const items = Array.isArray(transaction.items?.item)
-                    ? transaction.items.item.map((i: any) => i.item).join(', ')
-                    : transaction.items?.item?.item || 'No items';
-
-                // Calculate total price
-                const totalPrice = Array.isArray(transaction.items?.item)
-                    ? transaction.items.item.reduce((sum: number, i: any) => sum + Number(i.price || 0), 0)
-                    : Number(transaction.items?.item?.price || 0);
-
-                // Return flattened structure for display
-                return {
-                    id: transaction['@_id'] || transaction.id,
-                    date: transaction.date,
-                    store: transaction.store,
-                    phone: transaction.phone,
-                    items: items,
-                    totalPrice: totalPrice,
-                    // Original structure for reference
-                    original: transaction
-                };
-            });
-
-            setFlattenedData(flattened);
-        }
-    }, [jsonData]);
+    const toggleRow = (id: string) => {
+        setOpenRows(prev => ({
+            ...prev,
+            [id]: !prev[id]
+        }));
+    };
 
     const handleXmlFileUpload = async (file: File): Promise<any[]> => {
         return new Promise((resolve, reject) => {
@@ -93,8 +73,29 @@ export default function XmlUploadPage() {
                         }
                     }
 
-                    console.log("Parsed transactions:", transactions);
-                    resolve(transactions);
+                    // Process each transaction to normalize the items structure
+                    const processedTransactions = transactions.map((transaction: any) => {
+                        // Process items to ensure proper structure
+                        if (transaction.items && transaction.items.item) {
+                            const items = Array.isArray(transaction.items.item)
+                                ? transaction.items.item
+                                : [transaction.items.item];
+
+                            // Calculate transaction total
+                            const totalPrice = items.reduce((sum: number, item: any) =>
+                                sum + Number(item.price || 0), 0);
+
+                            return {
+                                ...transaction,
+                                items: { item: items },
+                                totalPrice: totalPrice
+                            };
+                        }
+                        return transaction;
+                    });
+
+                    console.log("Processed transactions:", processedTransactions);
+                    resolve(processedTransactions);
                 } catch (error) {
                     console.error("XML parsing error:", error);
                     reject(error);
@@ -178,6 +179,27 @@ export default function XmlUploadPage() {
         }).format(amount);
     };
 
+    // Update the getItemsSummary function
+    const getItemsSummary = (items: any[]) => {
+        if (!items || items.length === 0) return 'No items';
+
+        // Get unique item names with their quantities
+        const itemCounts: { [key: string]: number } = {};
+
+        items.forEach(item => {
+            // Fix for accessing item name - check both direct name property and nested item property
+            const name = item.name || item.item;
+            if (name) {
+                itemCounts[name] = (itemCounts[name] || 0) + Number(item.quantity || 1);
+            }
+        });
+
+        // Format as "ItemName (quantity), ItemName2 (quantity2), ..."
+        return Object.entries(itemCounts)
+            .map(([name, count]) => `${name}${count > 1 ? ` (${count})` : ''}`)
+            .join(', ');
+    };
+
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Typography variant="h4" gutterBottom>
@@ -236,6 +258,7 @@ export default function XmlUploadPage() {
                             <Table>
                                 <TableHead>
                                     <TableRow>
+                                        <TableCell />
                                         <TableCell>Transaction ID</TableCell>
                                         <TableCell>Date</TableCell>
                                         <TableCell>Store</TableCell>
@@ -245,30 +268,82 @@ export default function XmlUploadPage() {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {flattenedData.slice(0, 20).map((transaction, index) => (
-                                        <TableRow key={index} hover>
-                                            <TableCell>{transaction.id}</TableCell>
-                                            <TableCell>{transaction.date}</TableCell>
-                                            <TableCell>{transaction.store}</TableCell>
-                                            <TableCell>{transaction.phone}</TableCell>
-                                            <TableCell>
-                                                <Typography
-                                                    variant="body2"
-                                                    sx={{
-                                                        maxWidth: 200,
-                                                        overflow: 'hidden',
-                                                        textOverflow: 'ellipsis',
-                                                        whiteSpace: 'nowrap'
-                                                    }}
-                                                >
-                                                    {transaction.items}
-                                                </Typography>
-                                            </TableCell>
-                                            <TableCell align="right">
-                                                {formatCurrency(transaction.totalPrice)}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
+                                    {jsonData.slice(0, 20).map((transaction) => {
+                                        const transactionId = transaction['@_id'] || transaction.id;
+                                        const isOpen = openRows[transactionId] || false;
+
+                                        return (
+                                            <React.Fragment key={transactionId}>
+                                                <TableRow hover>
+                                                    <TableCell>
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={() => toggleRow(transactionId)}
+                                                            aria-label="expand row"
+                                                        >
+                                                            {isOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                                        </IconButton>
+                                                    </TableCell>
+                                                    <TableCell>{transactionId}</TableCell>
+                                                    <TableCell>{transaction.date}</TableCell>
+                                                    <TableCell>{transaction.store}</TableCell>
+                                                    <TableCell>{transaction.phone}</TableCell>
+                                                    <TableCell>
+                                                        <Tooltip
+                                                            title="Click the arrow to see detailed items"
+                                                            placement="top"
+                                                        >
+                                                            <Typography
+                                                                variant="body2"
+                                                                sx={{
+                                                                    maxWidth: 200,
+                                                                    overflow: 'hidden',
+                                                                    textOverflow: 'ellipsis',
+                                                                    whiteSpace: 'nowrap'
+                                                                }}
+                                                            >
+                                                                {getItemsSummary(transaction.items?.item || [])}
+                                                            </Typography>
+                                                        </Tooltip>
+                                                    </TableCell>
+                                                    <TableCell align="right">
+                                                        {formatCurrency(transaction.totalPrice || 0)}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
+                                                        <Collapse in={isOpen} timeout="auto" unmountOnExit>
+                                                            <Box sx={{ margin: 1 }}>
+                                                                <Typography variant="h6" gutterBottom component="div">
+                                                                    Items Detail
+                                                                </Typography>
+                                                                <Table size="small" aria-label="items">
+                                                                    <TableHead>
+                                                                        <TableRow>
+                                                                            <TableCell>Item Name</TableCell>
+                                                                            <TableCell>Quantity</TableCell>
+                                                                            <TableCell>Price Per Item</TableCell>
+                                                                            <TableCell align="right">Total Price</TableCell>
+                                                                        </TableRow>
+                                                                    </TableHead>
+                                                                    <TableBody>
+                                                                        {(transaction.items?.item || []).map((item: any, index: number) => (
+                                                                            <TableRow key={index}>
+                                                                                <TableCell>{item.name || item.item}</TableCell>
+                                                                                <TableCell>{item.quantity}</TableCell>
+                                                                                <TableCell>{formatCurrency(Number(item.price_per_item) || 0)}</TableCell>
+                                                                                <TableCell align="right">{formatCurrency(Number(item.price) || 0)}</TableCell>
+                                                                            </TableRow>
+                                                                        ))}
+                                                                    </TableBody>
+                                                                </Table>
+                                                            </Box>
+                                                        </Collapse>
+                                                    </TableCell>
+                                                </TableRow>
+                                            </React.Fragment>
+                                        );
+                                    })}
                                 </TableBody>
                             </Table>
                         </TableContainer>
@@ -280,9 +355,9 @@ export default function XmlUploadPage() {
                         </Paper>
                     )}
 
-                    {flattenedData.length > 20 && (
+                    {jsonData.length > 20 && (
                         <Typography variant="body2" sx={{ mt: 1, fontStyle: 'italic' }}>
-                            Showing 20 of {flattenedData.length} transactions
+                            Showing 20 of {jsonData.length} transactions
                         </Typography>
                     )}
 
@@ -292,7 +367,7 @@ export default function XmlUploadPage() {
                                 Total transactions: {jsonData.length}
                             </Typography>
                             <Typography variant="body2">
-                                Total value: {formatCurrency(flattenedData.reduce((sum, t) => sum + t.totalPrice, 0))}
+                                Total value: {formatCurrency(jsonData.reduce((sum, t) => sum + (t.totalPrice || 0), 0))}
                             </Typography>
                         </Box>
                         <Button
