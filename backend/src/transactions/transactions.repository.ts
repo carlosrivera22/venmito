@@ -16,6 +16,7 @@ export class TransactionsRepository {
     async bulkCreateTransactions(transactions: any[]): Promise<any[]> {
         // Implement your database operation to create multiple transactions
         // Return the result as an array of created transaction objects
+        console.log("TRANSACTIONS: ", transactions);
         return transactions;
     }
 }
