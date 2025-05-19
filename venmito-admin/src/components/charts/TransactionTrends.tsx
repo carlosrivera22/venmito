@@ -19,7 +19,7 @@ const TransactionTrendsChart = () => {
         if (!transactions || transactions.length === 0) return [];
 
         // Group transactions by month
-        const monthlyData = {};
+        const monthlyData: any = {};
 
         transactions.forEach(transaction => {
             if (transaction.transaction_date) {
@@ -45,7 +45,7 @@ const TransactionTrendsChart = () => {
 
         // Convert to array and sort by date
         return Object.values(monthlyData)
-            .map(entry => ({
+            .map((entry: any) => ({
                 ...entry,
                 amount: Math.round(entry.amount * 100) / 100 // Round to 2 decimal places
             }))

@@ -19,12 +19,12 @@ const PopularItemsChart = () => {
         if (!transactions || transactions.length === 0) return [];
 
         // Count all items across transactions
-        const itemCounts = {};
-        const itemQuantities = {};
+        const itemCounts: any = {};
+        const itemQuantities: any = {};
 
         transactions.forEach(transaction => {
             if (transaction.items && Array.isArray(transaction.items)) {
-                transaction.items.forEach(item => {
+                transaction.items.forEach((item: any) => {
                     if (item.itemName) {
                         // Count occurrences (number of transactions with this item)
                         itemCounts[item.itemName] = (itemCounts[item.itemName] || 0) + 1;
@@ -38,7 +38,7 @@ const PopularItemsChart = () => {
 
         // Convert to array, combine counts with quantities, and sort by quantity
         return Object.entries(itemQuantities)
-            .map(([name, quantity]) => ({
+            .map(([name, quantity]: any) => ({
                 name,
                 quantity,
                 transactions: itemCounts[name]
@@ -74,7 +74,7 @@ const PopularItemsChart = () => {
 
         transactions.forEach(transaction => {
             if (transaction.items && Array.isArray(transaction.items)) {
-                transaction.items.forEach(item => {
+                transaction.items.forEach((item: { itemName: unknown; quantity: string; }) => {
                     if (item.itemName) {
                         uniqueItems.add(item.itemName);
                         totalQuantity += parseInt(item.quantity);

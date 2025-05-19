@@ -19,8 +19,8 @@ const TransactionsByStoreChart = () => {
         if (!transactions || transactions.length === 0) return [];
 
         // Count transactions by store
-        const storeCounts = {};
-        const storeAmounts = {};
+        const storeCounts: any = {};
+        const storeAmounts: any = {};
 
         transactions.forEach(transaction => {
             if (transaction.store) {
@@ -31,7 +31,7 @@ const TransactionsByStoreChart = () => {
 
         // Convert to array and sort by count (descending)
         return Object.entries(storeCounts)
-            .map(([name, count]) => ({
+            .map(([name, count]: any) => ({
                 name,
                 count,
                 amount: Math.round(storeAmounts[name] * 100) / 100
