@@ -21,7 +21,6 @@ export class TransactionsRepository {
             const insertedTransactions: any = [];
             let person;
             for (const transactionData of transactions) {
-                console.log("transactionData", transactionData);
                 // Find the person with the matching phone number
                 try {
                     person = await trx('people').where({ telephone: transactionData.phone }).first();
@@ -43,8 +42,6 @@ export class TransactionsRepository {
                     total_amount: transactionData.totalPrice,
                 };
 
-                console.log("TRANSACTION TO INSERT", transactionToInsert);
-
                 let transactionId;
                 try {
                     // Check if transaction already exists
@@ -61,6 +58,25 @@ export class TransactionsRepository {
                 } catch (error) {
                     console.error(`Error inserting transaction for ${transactionData.phone}: `, error);
                     continue;
+                }
+
+                // Handle Items
+                if (transactionData.items.item && transactionData.items.item.length > 0) {
+                    try {
+                        // Remove existing item associations
+                        await trx('transaction_items').where({ transaction_id: transactionId }).del();
+
+                        // Insert or get items and create associations
+                        for (const itemData of transactionData.items.item) {
+                            // we need name, default_price for items
+                            // we need transaction_id, item_id, quantity,  for transaction_items
+                            const itemName = itemData.item[0];
+                            const defaultPrice = itemData.price_per_item;
+                            console.log("defaultPrice: ", defaultPrice);
+                        }
+                    } catch (error) {
+                        console.log(error);
+                    }
                 }
                 insertedTransactions.push({
                     id: transactionId,
