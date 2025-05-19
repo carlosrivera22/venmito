@@ -27,8 +27,43 @@ export class TransfersRepository {
                     //Check if sender and recipient exist
                     const paddedRecipient = transfer.recipient_id.toString().padStart(4, '0');
                     const paddedSender = transfer.sender_id.toString().padStart(4, '0');
-                    console.log("Recipient: ", paddedRecipient);
-                    console.log("Sender: ", paddedSender);
+                    let recipient;
+                    let sender;
+                    try {
+                        recipient = await trx('people')
+                            .where({ identifier: paddedRecipient })
+                            .first();
+                        sender = await trx('people')
+                            .where({ identifier: paddedSender })
+                            .first();
+
+                        if (!recipient || !sender) {
+                            console.log("Recipient or sender not found");
+                            continue;
+                        }
+                    } catch (error) {
+                        console.error(`Error finding recipient or sender: ${error}`);
+                        continue;
+                    }
+
+                    const transferToInsert = {
+                        senderId: sender.id,
+                        recipientId: recipient.id,
+                        amount: transfer.amount,
+                        date: transfer.date,
+                    };
+
+                    let transferId;
+                    try {
+                        //Insert the transfer
+                        const newTransfer = await trx('transfers').insert(transferToInsert);
+                        transferId = newTransfer[0];
+                        insertedTransfers.push(transferId);
+                        console.log("Transfer inserted: ", transferId);
+                    } catch (error) {
+                        console.error(`Error inserting transfer: ${error}`);
+                    }
+
                 } catch (error) {
                     console.error(error);
                 }
