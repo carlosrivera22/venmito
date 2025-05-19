@@ -16,15 +16,17 @@ import {
     InputLabel,
     Select,
     MenuItem,
-    CircularProgress
+    CircularProgress,
+    Button
 } from "@mui/material";
 import { format } from "date-fns";
+import { useRouter } from "next/router";
 
 export default function Promotions() {
     const { promotions, isLoading } = usePromotions();
-    console.log("PROMOTIONS: ", promotions)
     const [searchTerm, setSearchTerm] = useState("");
     const [filterStatus, setFilterStatus] = useState("all");
+    const router = useRouter()
 
     if (isLoading) {
         return (
@@ -91,6 +93,21 @@ export default function Promotions() {
                         <MenuItem value="not-responded">Not Responded</MenuItem>
                     </Select>
                 </FormControl>
+            </Box>
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mb: 3
+            }}>
+                <Typography variant="h4">People List</Typography>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => router.push('/promotions/upload')}
+                >
+                    Add Promotions
+                </Button>
             </Box>
 
             {/* Data table */}

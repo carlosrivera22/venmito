@@ -77,7 +77,7 @@ export default function People() {
                     color="primary"
                     onClick={() => router.push('/people/upload')}
                 >
-                    Add Person
+                    Add People
                 </Button>
             </Box>
 
