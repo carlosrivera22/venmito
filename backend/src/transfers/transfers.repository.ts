@@ -5,13 +5,42 @@ import db from "../database";
 export class TransfersRepository {
     private readonly tableName = 'transfers';
     async findTransfers() {
-        return [{
-            id: 1,
-            amount: 100,
-            sender: 'sender',
-            receiver: 'receiver',
-            status: 'pending'
-        }]
+        // Query to fetch all transfers with sender and recipient information
+        const transfers = await db(this.tableName)
+            .select([
+                `${this.tableName}.*`,
+                'sender.firstName as senderFirstName',
+                'sender.lastName as senderLastName',
+                'sender.identifier as senderIdentifier',
+                'recipient.firstName as recipientFirstName',
+                'recipient.lastName as recipientLastName',
+                'recipient.identifier as recipientIdentifier'
+            ])
+            .leftJoin('people as sender', `${this.tableName}.senderId`, 'sender.id')
+            .leftJoin('people as recipient', `${this.tableName}.recipientId`, 'recipient.id')
+            .orderBy(`${this.tableName}.date`, 'desc');
+
+        // Transform the results to have a cleaner structure
+        return transfers.map(transfer => ({
+            id: transfer.id,
+            amount: transfer.amount,
+            date: transfer.date,
+            status: transfer.status,
+            sender: {
+                id: transfer.senderId,
+                identifier: transfer.senderIdentifier,
+                firstName: transfer.senderFirstName,
+                lastName: transfer.senderLastName,
+                name: `${transfer.senderFirstName} ${transfer.senderLastName}`
+            },
+            recipient: {
+                id: transfer.recipientId,
+                identifier: transfer.recipientIdentifier,
+                firstName: transfer.recipientFirstName,
+                lastName: transfer.recipientLastName,
+                name: `${transfer.recipientFirstName} ${transfer.recipientLastName}`
+            }
+        }));
     }
 
     async bulkCreateTransfers(transfers: any[]) {

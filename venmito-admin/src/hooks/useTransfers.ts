@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export default function useTransfers() {
-    const [transfers, setTransfers] = useState([]);
+    const [transfers, setTransfers] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -15,8 +15,8 @@ export default function useTransfers() {
                 setIsLoading(false);
                 return;
             }
-            const data = await response.json();
-            setTransfers(data);
+            const transfers = await response.json();
+            setTransfers(transfers.data);
             setIsLoading(false);
         } catch (error) {
             setError("Error fetching transfers");
