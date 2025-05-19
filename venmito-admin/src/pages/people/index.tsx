@@ -86,12 +86,9 @@ export default function People() {
                     <TableHead>
                         <TableRow>
                             <TableCell>ID</TableCell>
-                            <TableCell>First Name</TableCell>
-                            <TableCell>Last Name</TableCell>
-                            <TableCell>Email</TableCell>
-                            <TableCell>Telephone</TableCell>
-                            <TableCell>City</TableCell>
-                            <TableCell>Country</TableCell>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Contact</TableCell>
+                            <TableCell>Address</TableCell>
                             <TableCell>Date of Birth</TableCell>
                             <TableCell sx={{ minWidth: 200 }}>Devices</TableCell>
                         </TableRow>
@@ -99,7 +96,7 @@ export default function People() {
                     <TableBody>
                         {people.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={9} align="center">
+                                <TableCell colSpan={6} align="center">
                                     <Typography variant="body2" color="textSecondary">
                                         No people found
                                     </Typography>
@@ -114,12 +111,42 @@ export default function People() {
                                     <TableCell component="th" scope="row">
                                         {person.id}
                                     </TableCell>
-                                    <TableCell>{person.first_name}</TableCell>
-                                    <TableCell>{person.last_name}</TableCell>
-                                    <TableCell>{person.email || 'N/A'}</TableCell>
-                                    <TableCell>{person.telephone || 'N/A'}</TableCell>
-                                    <TableCell>{person.location?.City || 'N/A'}</TableCell>
-                                    <TableCell>{person.location?.Country || 'N/A'}</TableCell>
+
+                                    {/* Combined Name Column */}
+                                    <TableCell>
+                                        {person.first_name} {person.last_name}
+                                    </TableCell>
+
+                                    {/* Combined Contact Column */}
+                                    <TableCell>
+                                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                            {person.email && (
+                                                <Typography variant="body2" sx={{ mb: 0.5 }}>
+                                                    {person.email}
+                                                </Typography>
+                                            )}
+                                            {person.telephone && (
+                                                <Typography variant="body2" color="textSecondary">
+                                                    {person.telephone}
+                                                </Typography>
+                                            )}
+                                            {!person.email && !person.telephone && 'N/A'}
+                                        </Box>
+                                    </TableCell>
+
+                                    {/* Combined Address Column */}
+                                    <TableCell>
+                                        {(person.location?.City || person.location?.Country) ? (
+                                            <Typography variant="body2">
+                                                {person.location?.City ? `${person.location.City}` : ''}
+                                                {person.location?.City && person.location?.Country ? ', ' : ''}
+                                                {person.location?.Country ? `${person.location.Country}` : ''}
+                                            </Typography>
+                                        ) : (
+                                            'N/A'
+                                        )}
+                                    </TableCell>
+
                                     <TableCell>
                                         {person.dob ? formatDate(person.dob) : 'N/A'}
                                     </TableCell>
