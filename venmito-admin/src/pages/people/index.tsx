@@ -109,7 +109,7 @@ export default function People() {
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                     <TableCell component="th" scope="row">
-                                        {person.id}
+                                        {person.identifier}
                                     </TableCell>
 
                                     {/* Combined Name Column */}

@@ -24,6 +24,7 @@ export class PeopleRepository {
                 // Format the response to match the expected structure
                 return {
                     id: person.id,
+                    identifier: person.identifier,
                     first_name: person.firstName,
                     last_name: person.lastName,
                     telephone: person.telephone,
