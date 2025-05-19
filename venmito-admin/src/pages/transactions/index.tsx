@@ -15,11 +15,14 @@ import {
     InputLabel,
     Select,
     MenuItem,
-    CircularProgress
+    CircularProgress,
+    Button
 } from "@mui/material";
 import { format } from "date-fns";
+import { useRouter } from "next/router";
 
 export default function Transactions() {
+    const router = useRouter();
     const { transactions } = useTransactions();
     const [searchTerm, setSearchTerm] = useState("");
     const [storeFilter, setStoreFilter] = useState("all");
@@ -95,6 +98,20 @@ export default function Transactions() {
                         ))}
                     </Select>
                 </FormControl>
+            </Box>
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mb: 3
+            }}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => router.push('/transactions/upload')}
+                >
+                    Add Transactions
+                </Button>
             </Box>
 
             {/* Data table */}
