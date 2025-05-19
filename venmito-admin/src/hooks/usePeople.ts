@@ -7,6 +7,7 @@ type Person = {
     first_name: string;
     last_name: string;
     email?: string;
+    devices: string[];
 };
 
 // Custom hook for managing people data
