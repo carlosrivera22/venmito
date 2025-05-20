@@ -19,10 +19,11 @@ import {
     MenuItem
 } from '@mui/material';
 import { useFileUpload } from '@/hooks/useUpload';
+import { useRouter } from 'next/router';
 
 export default function UploadPage() {
     const [rowsToShow, setRowsToShow] = useState(10);
-
+    const router = useRouter();
     const {
         jsonData,
         uploadError,
@@ -37,6 +38,7 @@ export default function UploadPage() {
     const onUploadClick = async () => {
         try {
             await handleUpload('/api/people/upload');
+            router.push('/people')
         } catch (error) {
             // Error is already handled in the hook
             console.error(error);

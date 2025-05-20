@@ -51,6 +51,30 @@ export const useYamlProcessor = () => {
         });
     }
 
+    // Helper function to clean quoted values
+    function cleanQuotedValue(value: string): string {
+        // Remove surrounding quotes if present
+        // This handles both single and double quotes
+        if ((value.startsWith('"') && value.endsWith('"')) ||
+            (value.startsWith("'") && value.endsWith("'"))) {
+            value = value.substring(1, value.length - 1);
+        }
+
+        // Handle adjacent quoted fields like "Field1""Field2""Field3"
+        // Split them into separate fields if needed
+        const adjacentQuotesPattern = /"([^"]*)""/g;
+        if (adjacentQuotesPattern.test(value)) {
+            // Split the string by the pattern of closing quote followed by opening quote
+            const fields = value.match(/"([^"]*)"/g)?.map(field => field.replace(/"/g, '')) || [];
+            // Join with spaces or another separator as needed
+            return fields.join(' ');
+        }
+
+        // Handle cases where words are run together (like "Santa ClausUSA")
+        // Look for capital letters after lowercase letters and add a space
+        return value.replace(/([a-z])([A-Z])/g, '$1 $2');
+    }
+
     // Function to convert YAML content to JSON format matching the target structure
     function processYamlToJson(yamlContent: string): any[] {
         // Split the YAML content into person blocks
@@ -70,7 +94,10 @@ export const useYamlProcessor = () => {
                 if (colonIndex === -1) continue;
 
                 const key = trimmedLine.substring(0, colonIndex).trim();
-                const value = trimmedLine.substring(colonIndex + 1).trim();
+                let value = trimmedLine.substring(colonIndex + 1).trim();
+
+                // Clean the value of quotes and fix formatting issues
+                value = cleanQuotedValue(value);
 
                 // Process according to the key
                 if (key === 'Android' || key === 'Desktop' || key === 'Iphone') {

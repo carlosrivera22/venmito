@@ -124,7 +124,6 @@ export const useFileUpload = (
 
                     // Limit number of items if specified
                     const limitedData = jsonContent.slice(0, maxItems);
-                    console.log("JSON DATA: ", limitedData);
                     setJsonData(limitedData);
                     setUploadSuccess(true);
                     setUploadError(null);
@@ -154,7 +153,6 @@ export const useFileUpload = (
 
     // Upload handler
     const handleUpload = async (uploadUrl: string) => {
-        console.log("JSON DATA: ", jsonData);
         if (jsonData.length === 0) {
             setUploadError('No data to upload');
             return;
