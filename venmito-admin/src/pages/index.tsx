@@ -5,8 +5,9 @@ import {
   Container,
   Typography,
 } from "@mui/material";
-
+import { useRouter } from "next/router";
 export default function Home() {
+  const router = useRouter();
   return (
     <>
       <Head>
@@ -59,7 +60,7 @@ export default function Home() {
                   growing businesses
                 </Box>
               </Typography>
-              <Button variant={'contained'}>
+              <Button variant={'contained'} onClick={() => router.push("/people/upload")}>
                 Start by Adding People
               </Button>
             </Box>
