@@ -21,8 +21,10 @@ import {
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import { useCsvUpload } from '@/hooks/useCsvUpload';
+import { useRouter } from 'next/router';
 
 export default function UploadPage() {
+    const router = useRouter();
     const [jsonData, setJsonData] = useState<any[]>([]);
     const [uploadError, setUploadError] = useState<string | null>(null);
     const [uploadSuccess, setUploadSuccess] = useState(false);
@@ -73,8 +75,8 @@ export default function UploadPage() {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Failed to upload data');
             }
-
             setUploadSuccess(true);
+            router.push('/transfers');
         } catch (error: any) {
             setUploadError(error.message || 'Failed to upload data');
         } finally {
