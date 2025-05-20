@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import {
     Container,
     Typography,
@@ -21,6 +21,7 @@ import {
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import { useCsvUpload } from '@/hooks/useCsvUpload';
+import { useRouter } from 'next/router';
 
 export default function UploadPage() {
     const [jsonData, setJsonData] = useState<any[]>([]);
@@ -29,7 +30,7 @@ export default function UploadPage() {
     const [isUploading, setIsUploading] = useState(false);
     const [rowsToShow, setRowsToShow] = useState<number>(10);
     const { handleCsvFileUpload } = useCsvUpload();
-
+    const router = useRouter();
     const onDrop = async (acceptedFiles: File[]) => {
         if (acceptedFiles.length === 0) return;
 
@@ -73,8 +74,8 @@ export default function UploadPage() {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Failed to upload data');
             }
-
             setUploadSuccess(true);
+            router.push('/promotions');
         } catch (error: any) {
             setUploadError(error.message || 'Failed to upload data');
         } finally {
