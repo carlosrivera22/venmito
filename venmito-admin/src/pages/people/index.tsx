@@ -174,6 +174,9 @@ export default function People() {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <Stack mx={5} my={3}>
+                <Typography variant={"body1"}>Total:{people.length} Users</Typography>
+            </Stack>
         </Container>
     );
 }
