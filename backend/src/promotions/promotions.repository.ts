@@ -109,6 +109,8 @@ export class PromotionsRepository {
                 }
             }
 
+            if (insertedPromotions.length === 0) throw new Error("No promotions were inserted or updated.");
+
             return insertedPromotions;
         });
     }

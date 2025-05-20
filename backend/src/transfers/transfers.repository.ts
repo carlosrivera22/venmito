@@ -97,6 +97,7 @@ export class TransfersRepository {
                     console.error(error);
                 }
             }
+            if (insertedTransfers.length === 0) throw new Error('No inserted transfers')
             return insertedTransfers;
         })
     }
