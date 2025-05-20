@@ -12,10 +12,12 @@ import {
     TableRow,
     CircularProgress,
     TextField,
-    InputAdornment
+    InputAdornment,
+    Button
 } from '@mui/material';
 import { format } from 'date-fns';
 import { Search } from '@mui/icons-material';
+import router from 'next/router';
 
 export default function Transfers() {
     const { transfers } = useTransfers();
@@ -86,6 +88,20 @@ export default function Transfers() {
                         ),
                     }}
                 />
+            </Box>
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mb: 3
+            }}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => router.push('/transfers/upload')}
+                >
+                    Add Transfers
+                </Button>
             </Box>
 
             {/* Table */}

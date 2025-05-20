@@ -1,6 +1,7 @@
 import Head from "next/head";
 import {
   Box,
+  Button,
   Container,
   Typography,
 } from "@mui/material";
@@ -58,12 +59,9 @@ export default function Home() {
                   growing businesses
                 </Box>
               </Typography>
-              <Typography
-                variant="body1"
-                sx={{ mb: 4, fontSize: "1.125rem", color: "#4b5563" }}
-              >
-                Simplify your data operations, gain valuable insights, and scale your business with Venmito's powerful database solutions.
-              </Typography>
+              <Button variant={'contained'}>
+                Start by Adding People
+              </Button>
             </Box>
 
             {/* Right column - can be used for image or additional content */}
