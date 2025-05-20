@@ -20,6 +20,10 @@ import {
     Tooltip,
     IconButton,
     Collapse,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import { XMLParser } from 'fast-xml-parser';
@@ -34,12 +38,17 @@ export default function XmlUploadPage() {
     const [rawXml, setRawXml] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<'table' | 'raw'>('table');
     const [openRows, setOpenRows] = useState<{ [key: string]: boolean }>({});
+    const [rowsToShow, setRowsToShow] = useState<number>(20);
 
     const toggleRow = (id: string) => {
         setOpenRows(prev => ({
             ...prev,
             [id]: !prev[id]
         }));
+    };
+
+    const handleRowsChange = (event: any) => {
+        setRowsToShow(event.target.value);
     };
 
     const handleXmlFileUpload = async (file: File): Promise<any[]> => {
@@ -246,16 +255,43 @@ export default function XmlUploadPage() {
                         <Typography variant="h6">
                             Transaction Data Preview
                         </Typography>
-                        <Chip
-                            label={`${jsonData.length} transactions found`}
-                            color="primary"
-                            variant="outlined"
-                        />
+
+                        {viewMode === 'table' && (
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                <Chip
+                                    label={`${jsonData.length} transactions found`}
+                                    color="primary"
+                                    variant="outlined"
+                                />
+
+                                {/* Rows selector */}
+                                <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
+                                    <InputLabel>Show Rows</InputLabel>
+                                    <Select
+                                        value={rowsToShow}
+                                        onChange={handleRowsChange}
+                                        label="Show Rows"
+                                    >
+                                        <MenuItem value={10}>10 rows</MenuItem>
+                                        <MenuItem value={20}>20 rows</MenuItem>
+                                        <MenuItem value={50}>50 rows</MenuItem>
+                                        <MenuItem value={100}>100 rows</MenuItem>
+                                        <MenuItem value={jsonData.length}>All rows</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Box>
+                        )}
                     </Box>
 
                     {viewMode === 'table' ? (
-                        <TableContainer component={Paper}>
-                            <Table>
+                        <TableContainer
+                            component={Paper}
+                            sx={{
+                                maxHeight: 500, // Increased height to accommodate expanded rows
+                                overflow: 'auto' // Enable scrolling
+                            }}
+                        >
+                            <Table stickyHeader>
                                 <TableHead>
                                     <TableRow>
                                         <TableCell />
@@ -268,7 +304,7 @@ export default function XmlUploadPage() {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {jsonData.slice(0, 20).map((transaction) => {
+                                    {jsonData.slice(0, rowsToShow).map((transaction) => {
                                         const transactionId = transaction['@_id'] || transaction.id;
                                         const isOpen = openRows[transactionId] || false;
 
@@ -348,23 +384,17 @@ export default function XmlUploadPage() {
                             </Table>
                         </TableContainer>
                     ) : (
-                        <Paper sx={{ p: 2, maxHeight: 400, overflow: 'auto' }}>
+                        <Paper sx={{ p: 2, maxHeight: 500, overflow: 'auto' }}>
                             <pre style={{ margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                                 {rawXml}
                             </pre>
                         </Paper>
                     )}
 
-                    {jsonData.length > 20 && (
-                        <Typography variant="body2" sx={{ mt: 1, fontStyle: 'italic' }}>
-                            Showing 20 of {jsonData.length} transactions
-                        </Typography>
-                    )}
-
-                    <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
+                    <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Box>
                             <Typography variant="body2">
-                                Total transactions: {jsonData.length}
+                                Showing {Math.min(rowsToShow, jsonData.length)} of {jsonData.length} transactions
                             </Typography>
                             <Typography variant="body2">
                                 Total value: {formatCurrency(jsonData.reduce((sum, t) => sum + (t.totalPrice || 0), 0))}

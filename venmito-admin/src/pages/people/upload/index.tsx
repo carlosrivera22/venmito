@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Container,
     Typography,
@@ -12,11 +12,17 @@ import {
     TableRow,
     Paper,
     Alert,
-    Snackbar
+    Snackbar,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem
 } from '@mui/material';
 import { useFileUpload } from '@/hooks/useUpload';
 
 export default function UploadPage() {
+    const [rowsToShow, setRowsToShow] = useState(10);
+
     const {
         jsonData,
         uploadError,
@@ -28,7 +34,6 @@ export default function UploadPage() {
         setUploadSuccess
     } = useFileUpload();
 
-
     const onUploadClick = async () => {
         try {
             await handleUpload('/api/people/upload');
@@ -36,6 +41,10 @@ export default function UploadPage() {
             // Error is already handled in the hook
             console.error(error);
         }
+    };
+
+    const handleRowsChange = (event: { target: { value: React.SetStateAction<number>; }; }) => {
+        setRowsToShow(event.target.value);
     };
 
     return (
@@ -69,11 +78,37 @@ export default function UploadPage() {
             {/* Preview of Uploaded Data */}
             {jsonData.length > 0 && (
                 <Box sx={{ mt: 4 }}>
-                    <Typography variant="h6" gutterBottom>
-                        Uploaded Data Preview
-                    </Typography>
-                    <TableContainer component={Paper}>
-                        <Table>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                        <Typography variant="h6">
+                            Uploaded Data Preview
+                        </Typography>
+
+                        {/* Rows selector */}
+                        <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
+                            <InputLabel>Show Rows</InputLabel>
+                            <Select
+                                value={rowsToShow}
+                                onChange={handleRowsChange}
+                                label="Show Rows"
+                            >
+                                <MenuItem value={10}>10 rows</MenuItem>
+                                <MenuItem value={25}>25 rows</MenuItem>
+                                <MenuItem value={50}>50 rows</MenuItem>
+                                <MenuItem value={100}>100 rows</MenuItem>
+                                <MenuItem value={jsonData.length}>All rows</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+
+                    {/* Table with scrolling */}
+                    <TableContainer
+                        component={Paper}
+                        sx={{
+                            maxHeight: 400, // This sets a max height and enables vertical scrolling
+                            overflow: 'auto' // Ensures both horizontal and vertical scrolling works
+                        }}
+                    >
+                        <Table stickyHeader>
                             <TableHead>
                                 <TableRow>
                                     <TableCell>ID</TableCell>
@@ -84,7 +119,7 @@ export default function UploadPage() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {jsonData.slice(0, 10).map((person) => (
+                                {jsonData.slice(0, rowsToShow).map((person) => (
                                     <TableRow key={person.id}>
                                         <TableCell>{person.id}</TableCell>
                                         <TableCell>{`${person.first_name} ${person.last_name}`}</TableCell>
@@ -96,9 +131,10 @@ export default function UploadPage() {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
+
+                    <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="body2">
-                            Total items: {jsonData.length}
+                            Showing {Math.min(rowsToShow, jsonData.length)} of {jsonData.length} items
                         </Typography>
                         <Button
                             variant="contained"

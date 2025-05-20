@@ -13,7 +13,11 @@ import {
     Paper,
     Alert,
     Snackbar,
-    CircularProgress
+    CircularProgress,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import { useCsvUpload } from '@/hooks/useCsvUpload';
@@ -23,6 +27,7 @@ export default function UploadPage() {
     const [uploadError, setUploadError] = useState<string | null>(null);
     const [uploadSuccess, setUploadSuccess] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
+    const [rowsToShow, setRowsToShow] = useState<number>(10);
     const { handleCsvFileUpload } = useCsvUpload();
 
     const onDrop = async (acceptedFiles: File[]) => {
@@ -85,6 +90,10 @@ export default function UploadPage() {
         }
     };
 
+    const handleRowsChange = (event: any) => {
+        setRowsToShow(event.target.value);
+    };
+
     // Get column headers for the table (from the first item if available)
     const getTableHeaders = () => {
         if (jsonData.length === 0) return [];
@@ -124,11 +133,36 @@ export default function UploadPage() {
             {/* Preview of Uploaded Data */}
             {jsonData.length > 0 && (
                 <Box sx={{ mt: 4 }}>
-                    <Typography variant="h6" gutterBottom>
-                        CSV Data Preview
-                    </Typography>
-                    <TableContainer component={Paper}>
-                        <Table>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                        <Typography variant="h6">
+                            CSV Data Preview
+                        </Typography>
+
+                        {/* Rows selector */}
+                        <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
+                            <InputLabel>Show Rows</InputLabel>
+                            <Select
+                                value={rowsToShow}
+                                onChange={handleRowsChange}
+                                label="Show Rows"
+                            >
+                                <MenuItem value={10}>10 rows</MenuItem>
+                                <MenuItem value={25}>25 rows</MenuItem>
+                                <MenuItem value={50}>50 rows</MenuItem>
+                                <MenuItem value={100}>100 rows</MenuItem>
+                                <MenuItem value={jsonData.length}>All rows</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+
+                    <TableContainer
+                        component={Paper}
+                        sx={{
+                            maxHeight: 400, // Sets max height for vertical scrolling
+                            overflow: 'auto' // Enables both horizontal and vertical scrolling
+                        }}
+                    >
+                        <Table stickyHeader>
                             <TableHead>
                                 <TableRow>
                                     {headers.map((header) => (
@@ -137,7 +171,7 @@ export default function UploadPage() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {jsonData.slice(0, 10).map((row, index) => (
+                                {jsonData.slice(0, rowsToShow).map((row, index) => (
                                     <TableRow key={index}>
                                         {headers.map((header) => (
                                             <TableCell key={`${index}-${header}`}>
@@ -149,9 +183,10 @@ export default function UploadPage() {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
+
+                    <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="body2">
-                            Total rows: {jsonData.length}
+                            Showing {Math.min(rowsToShow, jsonData.length)} of {jsonData.length} rows
                         </Typography>
                         <Button
                             variant="contained"
