@@ -29,8 +29,10 @@ import { useDropzone } from 'react-dropzone';
 import { XMLParser } from 'fast-xml-parser';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { useRouter } from 'next/router';
 
 export default function XmlUploadPage() {
+    const router = useRouter();
     const [jsonData, setJsonData] = useState<any[]>([]);
     const [uploadError, setUploadError] = useState<string | null>(null);
     const [uploadSuccess, setUploadSuccess] = useState(false);
@@ -164,6 +166,7 @@ export default function XmlUploadPage() {
             }
 
             setUploadSuccess(true);
+            router.push('/transactions');
         } catch (error: any) {
             setUploadError(error.message || 'Failed to upload data');
         } finally {
