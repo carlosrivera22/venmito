@@ -70,3 +70,5 @@ If you don't have Docker, download it from: https://www.docker.com/products/dock
 6. In the `Database` make sure to track all tables and relationships. 
 
 7. Go to the `API` tab, and play around with the explorer. 
+
+<img width="1425" alt="Screenshot 2025-05-25 at 7 04 11 PM" src="https://github.com/user-attachments/assets/b5e97bfa-1f88-4361-bb03-6b7ade737572" />
