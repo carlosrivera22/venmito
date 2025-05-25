@@ -60,10 +60,16 @@ If you don't have Docker, download it from: https://www.docker.com/products/dock
 
 3. Choose `PostgreSQL` and click `Connect Existing Database`.
 
+<img width="1431" alt="Screenshot 2025-05-25 at 7 05 30 PM" src="https://github.com/user-attachments/assets/d3182c6b-f06a-4fd0-a763-577e58144b9c" />
+
+
 4. Choose `Database URL` and paste the following:
    ```bash
    postgres://postgres:postgres@postgres:5432/postgres
    ````
+<img width="1136" alt="Screenshot 2025-05-25 at 7 06 24 PM" src="https://github.com/user-attachments/assets/d313d78b-fb24-4981-bc36-07529252e0ff" />
+
+
 
 5. Choose whatever database name you want, and click `Connect Database`.
 
