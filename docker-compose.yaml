@@ -1,5 +1,7 @@
 version: '3.8'
+
 services:
+  # Existing PostgreSQL service
   postgres:
     image: postgres:latest
     volumes:
@@ -15,26 +17,92 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - app-network
 
+  # Existing Hasura GraphQL Engine
   graphql-engine:
     image: hasura/graphql-engine:latest
     ports:
       - "8080:8080"
     restart: always
     environment:
-      # PostgreSQL database to store Hasura metadata
       HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
-      # Add PostgreSQL database as a data source
       PG_DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
-      # Enable the Hasura console
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
-      # Enable development mode
       HASURA_GRAPHQL_DEV_MODE: "true"
-      # Enable logging
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
     depends_on:
       postgres:
         condition: service_healthy
+    networks:
+      - app-network
+
+  # NestJS Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "5000:5000"
+    environment:
+      # ADD THESE MISSING VARIABLES HERE:
+      - NODE_ENV=development
+      - PORT=5000
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=postgres
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_SSL=false
+      - HASURA_GRAPHQL_ENDPOINT=http://graphql-engine:8080/v1/graphql
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - graphql-engine
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # venmito-admin Next.js Frontend
+  venmito-admin:
+    build:
+      context: ./venmito-admin
+      dockerfile: Dockerfile
+    container_name: venmito-admin
+    ports:
+      - "3000:3000"
+    environment:
+      # ADD THESE MISSING VARIABLES HERE:
+      - NODE_ENV=development
+      # For browser requests (client-side)
+      - NEXT_PUBLIC_API_URL=http://localhost:5000
+      - NEXT_PUBLIC_HASURA_GRAPHQL_ENDPOINT=http://localhost:8080/v1/graphql
+      - NEXT_PUBLIC_HASURA_WS_ENDPOINT=ws://localhost:8080/v1/graphql
+      # For server-side requests (API routes) - IMPORTANT: ADD THIS LINE
+      - API_URL=http://backend:5000
+      - HASURA_GRAPHQL_ENDPOINT=http://graphql-engine:8080/v1/graphql
+      # Next.js specific environment variables
+      - NEXT_TELEMETRY_DISABLED=1
+      - WATCHPACK_POLLING=true
+    volumes:
+      - ./venmito-admin:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - backend
+      - graphql-engine
+    networks:
+      - app-network
+    restart: unless-stopped
 
 volumes:
   postgres_data:
+
+networks:
+  app-network:
+    driver: bridge

@@ -25,7 +25,7 @@ export default function handler(
 async function getPeople(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
     try {
         // Fetch data from your local API
-        const response = await fetch("http://localhost:5000/people");
+        const response = await fetch("http://backend:5000/people");
 
         // Check if response is ok
         if (!response.ok) {
@@ -58,7 +58,7 @@ async function createPerson(req: NextApiRequest, res: NextApiResponse<ResponseDa
         }
 
         // Call your external API to create a person
-        const response = await fetch("http://localhost:5000/people", {
+        const response = await fetch("http://backend:5000/people", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

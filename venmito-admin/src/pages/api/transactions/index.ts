@@ -18,7 +18,7 @@ export default function handler(
 
 async function getTransactions(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
     try {
-        const response = await fetch("http://localhost:5000/transactions")
+        const response = await fetch("http://backend:5000/transactions")
         if (!response.ok) {
             throw new Error("Network response was not ok");
         }
