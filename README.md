@@ -1,61 +1,72 @@
-# VENMITO
+# Venmito - Development Setup
 
-### This application has a monorepo structure with a frontend (venmito-admin) and a backend project.
+This guide will help you get the application running on your local machine.
 
-## Frontend Instructions
-In order to run the frontend project called *venmito-admin* you should open the terminal and run:
- ```
- cd venmito-admin
- ```` 
+## Prerequisites
 
-For consistency we're going to be using `yarn` package manager. (Make sure you have `yarn` installed)
+Make sure you have these installed on your machine:
 
-Inside *venmito-admin* run:
- ```
- yarn
- ```
-to install all frontend dependencies. 
+- **Docker** (version 20.0 or higher)
+- **Docker Compose** (usually comes with Docker)
+- **Git**
 
-Finally run:
- ```
- yarn dev
- ```
- to run the project locally on port `3000` 
-
-Open http://localhost:3000 with your browser to see the result.
-
-Note: *The application won't work properly unless we setup the backend as well*
-
-## Backend Instructions
-In order to run the backend application you should open the terminal and run `cd backend`
-
-Inside the `backend` folder run: 
-```
-yarn install
-```
-to install dependencies. 
-
-### Database
-This project uses a relational PostgreSQL database. 
-
-We run our PostgreSQL service inside a Docker container. To run the database service execute the following command: 
-
-```
-docker compose up -d
+### Check if you have Docker:
+```bash
+docker --version
+docker-compose --version
 ```
 
-In order to properly run the project we need to setup our schema. For that run:
+If you don't have Docker, download it from: https://www.docker.com/products/docker-desktop
 
-```
-npx knex migrate:latest
-```
+## Quick Start
 
-Finally to run our backend service type the following command: 
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/carlosrivera22/venmito.git
 
-```
-yarn start
-```
+   cd venmito
+   ```
 
-## Hasura (For developers)
+2. **Start the application**
+   ```bash
+   docker-compose up --build
+   ```
 
+   **NOTE: This may take a few minutes, so be patient.**
 
+   WAIT UNTIL THIS STEP IS COMPLETED BEFORE CONTINUING.
+
+3. **Run database migrations** (**in a new terminal**)
+   ```bash
+   # Wait for the containers to start, then run:
+   docker-compose run --rm backend npx knex migrate:latest
+   ```
+
+4. **Access the application**
+   - **Frontend (Admin Panel)**: http://localhost:3000
+   - **Backend API**: http://localhost:5000
+   - **Hasura GraphQL Console**: http://localhost:8080
+   - **PostgreSQL**: localhost:5432
+
+## Hasura GraphQL Console (For developers)
+
+1. **Open the Hasura GraphQL 
+   console on the brower at:**
+   ```bash
+   localhost:8080
+   ```
+
+2. Go to data tab. Then create on manage and click `Connect Database`.
+
+3. Choose `PostgreSQL` and click `Connect Existing Database`.
+
+4. Choose `Database URL` and paste the following:
+   ```bash
+   postgres://postgres:postgres@postgres:5432/postgres
+   ````
+
+5. Choose whatever database name you want, and click `Connect Database`.
+
+6. In the `Database` make sure to track all tables and relationships. 
+
+7. Go to the `API` tab, and play around with the explorer. 
