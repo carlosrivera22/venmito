@@ -90,7 +90,7 @@ export default function UploadPage() {
                             <InputLabel>Show Rows</InputLabel>
                             <Select
                                 value={rowsToShow}
-                                onChange={handleRowsChange}
+                                onChange={(e) => handleRowsChange(e)}
                                 label="Show Rows"
                             >
                                 <MenuItem value={10}>10 rows</MenuItem>
