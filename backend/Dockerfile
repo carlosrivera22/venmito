@@ -17,7 +17,7 @@ RUN yarn
 COPY . .
 
 # Expose port
-EXPOSE 5000
+EXPOSE 5001
 
 # Start the application in development mode
 CMD ["yarn", "start:dev"]

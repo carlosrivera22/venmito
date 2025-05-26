@@ -10,7 +10,12 @@ Make sure you have these installed on your machine:
 - **Docker Compose** (usually comes with Docker)
 - **Git**
 
+
+
 ### Check if you have Docker:
+
+After installing Docker Desktop, open the Docker Desktop application and check the version by running the following command in your terminal:
+
 ```bash
 docker --version
 docker-compose --version
@@ -32,7 +37,7 @@ If you don't have Docker, download it from: https://www.docker.com/products/dock
    docker-compose up --build
    ```
 
-   **NOTE: This may take a few minutes, so be patient.**
+   **NOTE: THIS MAY TAKE A FEW MINUTES, SO BE PATIENT.**
 
    WAIT UNTIL THIS STEP IS COMPLETED BEFORE CONTINUING.
 
@@ -44,7 +49,7 @@ If you don't have Docker, download it from: https://www.docker.com/products/dock
 
 4. **Access the application**
    - **Frontend (Admin Panel)**: http://localhost:3000
-   - **Backend API**: http://localhost:5000
+   - **Backend API**: http://localhost:5001
    - **Hasura GraphQL Console**: http://localhost:8080
    - **PostgreSQL**: localhost:5432
 

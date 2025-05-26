@@ -19,7 +19,7 @@ export default function handler(
 
 async function getPromotions(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
     try {
-        const response = await fetch("http://backend:5000/promotions");
+        const response = await fetch("http://backend:5001/promotions");
 
         if (!response.ok) {
             throw new Error("Network response was not ok")

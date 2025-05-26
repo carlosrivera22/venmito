@@ -20,7 +20,7 @@ export default async function handler(
     }
 
     try {
-        const response = await fetch("http://backend:5000/transfers/upload", {
+        const response = await fetch("http://backend:5001/transfers/upload", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

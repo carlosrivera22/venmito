@@ -26,7 +26,7 @@ export default async function handler(
 
     try {
         // Forward bulk upload to local endpoint
-        const response = await fetch("http://backend:5000/people/upload", {
+        const response = await fetch("http://backend:5001/people/upload", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
