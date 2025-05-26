@@ -56,6 +56,9 @@ People are the main entity of the application. They have promotions and make tra
 
 2. Only after adding people, you can start adding other data like promotions, transfers, and transactions.
 
+Check out the video below for a walkthrough.
+https://youtu.be/SiJ4MNs1e5A
+
 ## Hasura GraphQL Console (For developers)
 
 1. **Open the Hasura GraphQL 
