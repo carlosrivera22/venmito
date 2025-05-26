@@ -25,7 +25,7 @@ If you don't have Docker, download it from: https://www.docker.com/products/dock
 
 ## Quick Start
 
-1. **Clone the repository**
+1. **Clone the repository or open zip file**
    ```bash
    git clone https://github.com/carlosrivera22/venmito.git
 
