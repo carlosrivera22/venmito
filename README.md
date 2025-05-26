@@ -48,6 +48,14 @@ If you don't have Docker, download it from: https://www.docker.com/products/dock
    - **Hasura GraphQL Console**: http://localhost:8080
    - **PostgreSQL**: localhost:5432
 
+## Application Walkthrough
+
+People are the main entity of the application. They have promotions and make transfers and transactions. 
+
+1. Therefore, once on http://localhost:3000, start by adding people.
+
+2. Only after adding people, you can start adding other data like promotions, transfers, and transactions.
+
 ## Hasura GraphQL Console (For developers)
 
 1. **Open the Hasura GraphQL 
