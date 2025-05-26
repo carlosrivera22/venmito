@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  # Existing PostgreSQL service
+  # PostgreSQL Database
   postgres:
-    image: postgres:latest
+    image: postgres:15-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -20,9 +20,9 @@ services:
     networks:
       - app-network
 
-  # Existing Hasura GraphQL Engine
+  # Hasura GraphQL Engine
   graphql-engine:
-    image: hasura/graphql-engine:latest
+    image: hasura/graphql-engine:v2.36.0-ce
     ports:
       - "8080:8080"
     restart: always
@@ -38,16 +38,13 @@ services:
     networks:
       - app-network
 
-  # NestJS Backend
+  # NestJS Backend - NOW PULLS FROM DOCKER HUB
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: carlosrivera22/venmito-backend:latest
     container_name: backend
     ports:
       - "5001:5001"
     environment:
-      # ADD THESE MISSING VARIABLES HERE:
       - NODE_ENV=development
       - PORT=5001
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres
@@ -58,9 +55,6 @@ services:
       - DATABASE_PASSWORD=postgres
       - DATABASE_SSL=false
       - HASURA_GRAPHQL_ENDPOINT=http://graphql-engine:8080/v1/graphql
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
     depends_on:
       - postgres
       - graphql-engine
@@ -68,31 +62,24 @@ services:
       - app-network
     restart: unless-stopped
 
-  # venmito-admin Next.js Frontend
+  # Next.js Frontend - NOW PULLS FROM DOCKER HUB
   venmito-admin:
-    build:
-      context: ./venmito-admin
-      dockerfile: Dockerfile
+    image: carlosrivera22/venmito-admin:latest
     container_name: venmito-admin
     ports:
       - "3000:3000"
     environment:
-      # ADD THESE MISSING VARIABLES HERE:
       - NODE_ENV=development
       # For browser requests (client-side)
       - NEXT_PUBLIC_API_URL=http://localhost:5001
       - NEXT_PUBLIC_HASURA_GRAPHQL_ENDPOINT=http://localhost:8080/v1/graphql
       - NEXT_PUBLIC_HASURA_WS_ENDPOINT=ws://localhost:8080/v1/graphql
-      # For server-side requests (API routes) - IMPORTANT: ADD THIS LINE
+      # For server-side requests (API routes)
       - API_URL=http://backend:5001
       - HASURA_GRAPHQL_ENDPOINT=http://graphql-engine:8080/v1/graphql
       # Next.js specific environment variables
       - NEXT_TELEMETRY_DISABLED=1
       - WATCHPACK_POLLING=true
-    volumes:
-      - ./venmito-admin:/app
-      - /app/node_modules
-      - /app/.next
     depends_on:
       - backend
       - graphql-engine
